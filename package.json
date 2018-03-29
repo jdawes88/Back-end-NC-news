@@ -8,8 +8,8 @@
     "seed:dev": "NODE_ENV=dev node seed/dev.seed.js",
     "seed:test": "NODE_ENV=test node seed/seed.js",
     "test": "mocha ./spec",
-    "start": "node listen.js",
-    "dev": "nodemon listen.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
