@@ -1,18 +1,42 @@
 const {Articles, Comments, Users} = require('../models/index');
 const {sample} = require('lodash')
 
+function getCommentsCount (comments) {
+    return comments.reduce((acc, comment) => {
+        acc[comment.belongs_to] = (acc[comment.belongs_to]) ? acc[comment.belongs_to] +1 : 1
+        return acc 
+    }, {})
+}
+
 function getArticles (req, res, next) {
-    Articles.find()
+    Articles.find().lean()
     .then(articles => {
-        res.send({articles})
+        return Promise.all([articles, Comments.find()])
     })
+    .then(([articles, comments]) => {
+        return Promise.all([articles, getCommentsCount(comments)])
+    })
+    .then(([articles, commentsCount]) => {
+        return articles.map(article => {
+            article.comments = commentsCount[article._id] || 0;
+            return article
+        })
+        return articles.save()
+    })
+    .then(articles => {
+        return res.send({articles})
+    })
+    .catch(next)
 }
 
 function getCommentsByArticleId (req, res, next) {
     let {article_id} = req.params
     Comments.find({belongs_to: `${article_id}`})
     .then(comments => {
-        res.send({comments});
+        return res.send({comments});
+    })
+    .catch(err => {
+        return next({status: 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
     })
 }
 
@@ -25,10 +49,10 @@ function addCommentToArticle (req, res, next) {
     })
     return newComment.save()
     .then(comment => {
-        res.status(201).send({comment})
+        return res.status(201).send({comment})
     })
     .catch(err => {
-        console.log(err)
+        return next({status: 400, message: `Could not add comment to ${article_id}. Please try another article id.`, error: err})
     }) 
 }
 
@@ -41,7 +65,10 @@ function articleVote (req, res, next) {
         {$inc : {votes : voteInc}}, 
         {new: true})
     .then(article => {
-        res.send({article})
+        return res.send({article})
+    })
+    .catch(err => {
+        return next({status: 400, message: `Could not adjust votes for ${article_id}. Please try another article id.`, error: err}) 
     })
 }
 

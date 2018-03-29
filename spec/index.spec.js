@@ -53,6 +53,7 @@ describe('/', () => {
             .then(result => {
                 expect(result.body.articles).to.be.an('array');
                 expect(result.body.articles[0].title).to.equal('Living in the shadow of a great man')
+                expect(result.body.articles[0]).to.have.all.keys(['__v', 'votes', 'title', 'body', 'belongs_to', 'created_by', 'comments', '_id'])
             })
         })
         it('GET /articles/:article_id/comments', () => {
@@ -123,9 +124,9 @@ describe('/', () => {
             })
         })
     describe('/api/users', () => {
-        it(`GET /api/users/:user_id`, () => {
+        it(`GET /api/users/:username`, () => {
             return request
-            .get(`/api/users/${users[0]._id}`)
+            .get(`/api/users/${users[0].username}`)
             .expect(200)
             .then(result => {
                 expect(result.body.user.username).to.equal('butter_bridge')

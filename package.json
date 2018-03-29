@@ -4,6 +4,7 @@
   "description": "Northcoders News API Sprint",
   "main": "index.js",
   "scripts": {
+    "seed:prod": "NODE_ENV=production node seed/dev.seed.js",
     "seed:dev": "NODE_ENV=dev node seed/dev.seed.js",
     "seed:test": "NODE_ENV=test node seed/seed.js",
     "test": "mocha ./spec",

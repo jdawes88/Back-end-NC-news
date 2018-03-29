@@ -10,7 +10,10 @@ function commentVote (req, res, next) {
         {$inc : {votes : voteInc}}, 
         {new: true})
     .then(comment => {
-        res.send({comment})
+        return res.send({comment})
+    })
+    .catch(err => {
+        return next({status: 400, message: `Could not update votes for ${comment_id}. Please try another comment id`, error: err})
     })
 }
 
@@ -18,11 +21,13 @@ function deleteComment (req, res, next) {
     let {comment_id} = req.params
     Comments.findByIdAndRemove(comment_id)
     .then(deletedComment => {
-        Comments.find()
-        .then(newComments => {
-            res.send({newComments})
-        })
-        
+        return Comments.find()
+    })
+    .then(newComments => {
+        return res.send({newComments})
+    })
+    .catch(err => {
+        return next({status: 400, message: `Could not delete comment ${comment_id}. Please try another comment id`, error: err})
     })
 }
 
