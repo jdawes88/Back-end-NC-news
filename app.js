@@ -1,5 +1,5 @@
-if(!process.env.NODE_ENV)process.env.NODE_ENV = 'dev';
-const {DB_URL} = require('./config/index');
+if(!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
+const DB_URL = process.env.DB_URL || require('./config/index').DB_URL;
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');

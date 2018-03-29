@@ -1,4 +1,4 @@
-const {PORT} = process.env || require('./config/index');
+const PORT = process.env.PORT || require('./config/index').PORT;
 const app = require('./app');
 
 
