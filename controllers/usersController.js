@@ -5,13 +5,21 @@ function getUserByUsername (req, res, next) {
     Users.findOne({username: username})
     .then(user => {
         if(!user){
-            return next({status: 400, message: `Could not find user ${username}. Please try another username`, error: err})
+            if (err.name === 'CastError'){
+                return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+            } else {
+                return next(err)
+            }
         } else {
             return res.send({user})
         }
     })
     .catch(err => {
-        return next({status: 400, message: `Could not find user ${username}. Please try another username`, error: err})
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+        } else {
+            return next(err)
+        }
     })
 }
 

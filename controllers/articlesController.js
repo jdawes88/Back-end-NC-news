@@ -36,7 +36,11 @@ function getCommentsByArticleId (req, res, next) {
         return res.send({comments});
     })
     .catch(err => {
-        return next({status: 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+        } else {
+            return next(err)
+        }
     })
 }
 
@@ -52,7 +56,11 @@ function addCommentToArticle (req, res, next) {
         return res.status(201).send({comment})
     })
     .catch(err => {
-        return next({status: 400, message: `Could not add comment to ${article_id}. Please try another article id.`, error: err})
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not add comment for ${article_id}. Please try another article id.`, error: err})
+        } else {
+            return next(err)
+        }
     }) 
 }
 
@@ -68,7 +76,11 @@ function articleVote (req, res, next) {
         return res.send({article})
     })
     .catch(err => {
-        return next({status: 400, message: `Could not adjust votes for ${article_id}. Please try another article id.`, error: err}) 
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+        } else {
+            return next(err)
+        } 
     })
 }
 

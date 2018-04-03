@@ -13,7 +13,11 @@ function commentVote (req, res, next) {
         return res.send({comment})
     })
     .catch(err => {
-        return next({status: 400, message: `Could not update votes for ${comment_id}. Please try another comment id`, error: err})
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+        } else {
+            return next(err)
+        }
     })
 }
 
@@ -27,7 +31,11 @@ function deleteComment (req, res, next) {
         return res.send({newComments})
     })
     .catch(err => {
-        return next({status: 400, message: `Could not delete comment ${comment_id}. Please try another comment id`, error: err})
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+        } else {
+            return next(err)
+        }
     })
 }
 

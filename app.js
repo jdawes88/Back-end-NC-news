@@ -16,19 +16,21 @@ mongoose.connect(DB_URL)
 
 app.use('/api', apiRouter)
 
+app.use(express.static('public'))
+
 app.use('/*', (req, res, next) => {
     return res.status(404).send('Error: Page not found!')
 });
 
 app.use((err, req, res, next) => {
     if (err.status === 400){
-        return res.status(400).send(err.message)
+        return res.status(400).send(err)
     }
     else next(err)
 })
 
 app.use((err, req, res, next) => {
-    res.status(500).send({message: 'Internal server error!'});
+    res.status(500).send(err);
 })
 
 module.exports = app
