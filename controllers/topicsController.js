@@ -16,7 +16,7 @@ function getArticlesbyTopics (req, res, next) {
     })
     .catch(err => {
         if (err.name === 'CastError'){
-            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+            return next({status : 400, message: `Could not retrieve ${topic_id}. Please try another topic id.`, error: err})
         } else {
             return next(err)
         }

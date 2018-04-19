@@ -14,7 +14,7 @@ function commentVote (req, res, next) {
     })
     .catch(err => {
         if (err.name === 'CastError'){
-            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+            return next({status : 400, message: `Could not retrieve comments for ${comment_id}. Please try another comment id.`, error: err})
         } else {
             return next(err)
         }
@@ -32,7 +32,7 @@ function deleteComment (req, res, next) {
     })
     .catch(err => {
         if (err.name === 'CastError'){
-            return next({status : 400, message: `Could not retrieve comments for ${article_id}. Please try another article id.`, error: err})
+            return next({status : 400, message: `Could not retrieve comments for ${comment_id}. Please try another comment id.`, error: err})
         } else {
             return next(err)
         }
