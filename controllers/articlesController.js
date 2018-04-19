@@ -9,7 +9,8 @@ function getCommentsCount (comments) {
 }
 
 function getArticles (req, res, next) {
-    Articles.find().lean()
+    Articles.find()
+    .populate('created_by', 'name').lean()
     .then(articles => {
         return Promise.all([articles, Comments.find()])
     })
@@ -32,6 +33,7 @@ function getArticles (req, res, next) {
 function getCommentsByArticleId (req, res, next) {
     let {article_id} = req.params
     Comments.find({belongs_to: `${article_id}`})
+    .populate('created_by', 'name')
     .then(comments => {
         return res.send({comments});
     })
