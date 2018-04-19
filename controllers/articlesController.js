@@ -30,6 +30,30 @@ function getArticles (req, res, next) {
     .catch(next)
 }
 
+function getArticleById (req, res, next) {
+    const {article_id} = req.params;
+    return Articles.findById(article_id)
+    .populate('created_by', 'name')
+    .then(user => {
+        if(!user){
+            if (err.name === 'CastError'){
+                return next({status : 400, message: `Could not retrieve article for ${article_id}. Please try another username.`, error: err})
+            } else {
+                return next(err)
+            }
+        } else {
+            return res.send({user})
+        }
+    })
+    .catch(err => {
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve article for ${article_id}. Please try another username.`, error: err})
+        } else {
+            return next(err)
+        }
+    })
+}
+
 function getCommentsByArticleId (req, res, next) {
     let {article_id} = req.params
     Comments.find({belongs_to: `${article_id}`})
@@ -90,5 +114,6 @@ module.exports = {
     getArticles, 
     getCommentsByArticleId, 
     addCommentToArticle,
-    articleVote
+    articleVote,
+    getArticleById
 }
