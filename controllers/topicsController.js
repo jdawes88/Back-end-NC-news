@@ -11,7 +11,7 @@ function getTopics (req, res, next) {
 function getArticlesbyTopics (req, res, next) {
     let topic_id = req.params.topic_id;
     Articles.find({belongs_to: `${topic_id}`})
-    .populate('belongs_to', 'title')
+    .populate('created_by', 'name')
     .then(articles => {
         return res.send({articles})
     })
