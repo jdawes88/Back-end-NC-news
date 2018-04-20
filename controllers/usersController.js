@@ -1,5 +1,27 @@
 const {Users} = require('../models/index');
 
+function getAllUsers (req, res, next) {
+    Users.find()
+    .then(users => {
+        if(!users){
+            if (err.name === 'CastError'){
+                return next({status : 400, message: `Could not retrieve users. Please try another route`, error: err})
+            } else {
+                return next(err)
+            }
+        } else {
+            return res.send({users})
+        }
+    })
+    .catch(err => {
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve user for ${username}. Please try another username.`, error: err})
+        } else {
+            return next(err)
+        }
+    })    
+}
+
 function getUserByUsername (req, res, next) {
     const {username} = req.params
     return Users.findOne({username: username})
@@ -23,4 +45,4 @@ function getUserByUsername (req, res, next) {
     })
 }
 
-module.exports = {getUserByUsername}
+module.exports = {getUserByUsername, getAllUsers}
