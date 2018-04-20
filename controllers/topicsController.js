@@ -1,12 +1,5 @@
 const {Topics, Articles} = require('../models/index');
 
-function getCommentsCount (comments) {
-    return comments.reduce((acc, comment) => {
-        acc[comment.belongs_to] = (acc[comment.belongs_to]) ? acc[comment.belongs_to] +1 : 1
-        return acc 
-    }, {})
-}
-
 function getTopics (req, res, next) {
     Topics.find()
     .then(topics => {
@@ -18,24 +11,17 @@ function getTopics (req, res, next) {
 function getArticlesbyTopics (req, res, next) {
     let topic_id = req.params.topic_id;
     Articles.find({belongs_to: `${topic_id}`})
-    .populate('created_by', 'name').lean()
-    .then(articles => {
-        return Promise.all([articles, Comments.find()])
-    })
-    .then(([articles, comments]) => {
-        return Promise.all([articles, getCommentsCount(comments)])
-    })
-    .then(([articles, commentsCount]) => {
-        return articles.map(article => {
-            article.comments = commentsCount[article._id] || 0;
-            return article
-        })
-        return articles.save()
-    })
+    .populate('created_by', 'name')
     .then(articles => {
         return res.send({articles})
     })
-    .catch(next)
+    .catch(err => {
+        if (err.name === 'CastError'){
+            return next({status : 400, message: `Could not retrieve ${topic_id}. Please try another topic id.`, error: err})
+        } else {
+            return next(err)
+        }
+    })
 }
 
 module.exports = {getTopics, getArticlesbyTopics}
